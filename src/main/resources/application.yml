@@ -1,0 +1,5 @@
+config:
+  db:
+    url: jdbc:postgresql:posts
+    username: postgres
+    pass: dzVkh
