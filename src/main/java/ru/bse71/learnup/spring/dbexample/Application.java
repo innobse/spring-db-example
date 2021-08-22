@@ -12,11 +12,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 import ru.bse71.learnup.spring.dbexample.config.DbPropertiesConfig;
-import ru.bse71.learnup.spring.dbexample.dao.PostDaoHibernate;
-import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbc;
-import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbcTemplate;
-import ru.bse71.learnup.spring.dbexample.dao.PostDaoNamedJdbcTemplate;
+import ru.bse71.learnup.spring.dbexample.dao.*;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
+import ru.bse71.learnup.spring.dbexample.repositories.CommentRepository;
+import ru.bse71.learnup.spring.dbexample.repositories.PostRepository;
 import ru.bse71.learnup.spring.dbexample.services.DemoService;
 
 import javax.sql.DataSource;
@@ -63,11 +62,18 @@ public class Application {
     }
 
     @Bean
+    @Profile("data-jpa")
+    public PostDao postDaoDataJpa(PostRepository postRepository, CommentRepository commentRepository) {
+        return new PostDaoDataJpa(postRepository, commentRepository);
+    }
+
+    @Bean
     public DemoService demoService(PostDao postDao) {
         return new DemoService(postDao);
     }
 
     @Bean
+    @Profile("hibernate")
     public SessionFactory sessionFactory(DataSource dataSource, AsyncTaskExecutor executor) {
         return new LocalSessionFactoryBuilder(dataSource)
                 .scanPackages("ru.bse71.learnup.spring.dbexample.entities")
