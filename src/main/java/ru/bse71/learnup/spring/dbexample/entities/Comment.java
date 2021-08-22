@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
+
 /**
  * Created by bse71
  * Date: 18.08.2021
@@ -15,10 +17,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "comments")
 public class Comment {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @Column
     private String text;
+
+    @JoinColumn
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
     public int getId() {
