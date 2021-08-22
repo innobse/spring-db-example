@@ -5,8 +5,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.bse71.learnup.spring.dbexample.config.DbPropertiesConfig;
 import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbc;
+import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbcTemplate;
+import ru.bse71.learnup.spring.dbexample.dao.PostDaoNamedJdbcTemplate;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.services.DemoService;
 
@@ -26,7 +30,7 @@ public class Application {
 
     @Bean
     @Profile("jdbc")
-    public PostDao commentDao(DbPropertiesConfig dbConfig) {
+    public PostDao postDaoJdbc(DbPropertiesConfig dbConfig) {
         return new PostDaoJdbc(
                 dbConfig.getDbUrl(),
                 dbConfig.getUsername(),
@@ -34,7 +38,19 @@ public class Application {
     }
 
     @Bean
-    public DemoService demoService(PostDao commentDao) {
-        return new DemoService(commentDao);
+    @Profile("jdbcTemplate")
+    public PostDao postDaoJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        return new PostDaoJdbcTemplate(jdbcTemplate);
+    }
+
+    @Bean
+    @Profile("jdbcTemplateNamed")
+    public PostDao postDaoNamedJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        return new PostDaoNamedJdbcTemplate(namedParameterJdbcTemplate);
+    }
+
+    @Bean
+    public DemoService demoService(PostDao postDao) {
+        return new DemoService(postDao);
     }
 }

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1_add-posts" author="bse71">
+        <createTable tableName="posts">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="title" type="varchar(64)" />
+            <column name="text" type="varchar(255)" />
+        </createTable>
+
+        <addUniqueConstraint tableName="posts" columnNames="title" />
+
+        <sql>
+            CREATE SEQUENCE hibernate_sequence;
+
+            INSERT INTO posts (id, text, title) VALUES (nextval('hibernate_sequence'), 'text 1', 'title 1');
+            INSERT INTO posts (id, text, title) VALUES (nextval('hibernate_sequence'), 'text 2', 'title 2');
+            INSERT INTO posts (id, text, title) VALUES (nextval('hibernate_sequence'), 'text 3', 'title 3');
+        </sql>
+
+    </changeSet>
+
+    <changeSet id="2_add-comments" author="bse71">
+        <createTable tableName="comments">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="text" type="varchar(255)" />
+            <column name="post_id" type="int" />
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="comments" baseColumnNames="post_id"
+                                 constraintName="comments_posts_id_fk"
+                                 referencedTableName="posts"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+
+        <sql>
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '1 comment 1', 1);
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '1 comment 2', 1);
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '2 comment 1', 2);
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '2 comment 2', 2);
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '2 comment 3', 2);
+            INSERT INTO comments (id, text, post_id) VALUES (nextval('hibernate_sequence'), '3 comment 1', 3);
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class DbPropertiesConfig {
 
-    @Value("${config.db.url}")
+    @Value("${config.db.url:}")
     private String dbUrl;
 
-    @Value("${config.db.username}")
+    @Value("${config.db.username:}")
     private String username;
 
-    @Value("${config.db.pass}")
+    @Value("${config.db.pass:}")
     private String password;
 }
