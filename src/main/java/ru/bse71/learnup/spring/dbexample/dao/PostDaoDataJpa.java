@@ -48,4 +48,12 @@ public class PostDaoDataJpa implements PostDao {
         postRepository.deleteById(id);
         return true;
     }
+
+    public List<Post> getAllPostsWithText() {
+        return postRepository.getAllByTextNotNull();
+    }
+
+    public List<Post> getAllPostsWithTitleContains(String template) {
+        return postRepository.getAllByTitleContains(template);
+    }
 }
