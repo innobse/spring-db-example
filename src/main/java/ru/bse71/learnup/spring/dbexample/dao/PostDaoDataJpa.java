@@ -49,6 +49,14 @@ public class PostDaoDataJpa implements PostDao {
         return true;
     }
 
+    public List<Post> getPopularPosts(int popularityBorder) {
+        return postRepository.getPopularPosts(popularityBorder);
+    }
+
+    public List<Post> getMiddlePopularPosts() {
+        return postRepository.getMiddleLikesPosts();
+    }
+
     public List<Post> getAllPostsWithText() {
         return postRepository.getAllByTextNotNull();
     }
@@ -56,4 +64,5 @@ public class PostDaoDataJpa implements PostDao {
     public List<Post> getAllPostsWithTitleContains(String template) {
         return postRepository.getAllByTitleContains(template);
     }
+
 }

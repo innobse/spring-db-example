@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="3_add-post-likes" author="bse71">
+        <addColumn tableName="posts">
+            <column name="likes" type="bigint" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+
+        <sql>
+            UPDATE posts SET likes = 123 WHERE id = 1;
+            UPDATE posts SET likes = 56 WHERE id = 2;
+            UPDATE posts SET likes = 45 WHERE id = 3;
+        </sql>
+
+    </changeSet>
+
+</databaseChangeLog>

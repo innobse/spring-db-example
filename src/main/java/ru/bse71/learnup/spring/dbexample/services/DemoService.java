@@ -53,6 +53,8 @@ public class DemoService implements ApplicationContextAware {
 
         System.out.println("Посты с текстом:\n" + repo.getAllPostsWithText());
         System.out.println("\n\nПосты, содержащие \"tintle\":\n" + repo.getAllPostsWithTitleContains("title"));
+        System.out.println("\n\nПопулярные посты:\n" + repo.getPopularPosts(50));
+        System.out.println("\n\nСредней популярности посты:\n" + repo.getMiddlePopularPosts());
     }
 
     private void printPosts(Collection<Post> posts) {

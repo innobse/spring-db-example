@@ -19,6 +19,10 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
+@NamedQueries({
+        @NamedQuery(name = "Post.getPopular", query = "SELECT p FROM Post p WHERE p.likesCount > 50"),
+        @NamedQuery(name = "Post.getMiddle", query = "SELECT p FROM Post p WHERE p.likesCount BETWEEN 10 AND 50")
+})
 public class Post {
 
     @Id
@@ -31,6 +35,9 @@ public class Post {
     @Column
     private String text;
 
+    @Column(name = "likes")
+    private Integer likesCount;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
@@ -38,38 +45,6 @@ public class Post {
         this.id = id;
         this.title = title;
         this.text = text;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     @Override
@@ -88,7 +63,7 @@ public class Post {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(
-                String.format("Post id: %d\n%s\n%s\n", id, title, text));
+                String.format("Post id: %d\n%s\n%s\nLIKE:%d\n", id, title, text, likesCount));
 
         if (comments != null) {
             for (Comment comment : comments) {
