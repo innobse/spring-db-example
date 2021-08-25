@@ -19,6 +19,21 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
+@NamedEntityGraph(
+        name = "post-with-comments",
+        attributeNodes = {
+                @NamedAttributeNode("id"),
+                @NamedAttributeNode("title"),
+                @NamedAttributeNode("text"),
+                @NamedAttributeNode(value = "comments", subgraph = "comments")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "comments", attributeNodes = {
+                        @NamedAttributeNode("id"),
+                        @NamedAttributeNode("text")
+                })
+        }
+)
 public class Post {
 
     @Id
@@ -31,7 +46,7 @@ public class Post {
     @Column
     private String text;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
     public Post(Integer id, String title, String text) {

@@ -3,11 +3,15 @@ package ru.bse71.learnup.spring.dbexample.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.graph.RootGraph;
 import org.hibernate.query.Query;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * Created by bse71
@@ -63,6 +67,13 @@ public class PostDaoHibernate implements PostDao {
             session.delete(loaded);
             session.getTransaction().commit();
             return true;
+        }
+    }
+
+    public Post getGraph(int id) {
+        try (Session session = sessionFactory.openSession()) {
+            final RootGraph<?> entityGraph = session.createEntityGraph("post-with-comments");
+            return session.find(Post.class, id, singletonMap("javax.persistence.fetchgraph", entityGraph));
         }
     }
 }
