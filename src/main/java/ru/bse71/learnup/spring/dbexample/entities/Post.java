@@ -3,6 +3,7 @@ package ru.bse71.learnup.spring.dbexample.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,6 +20,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
+@Cacheable
+@org.hibernate.annotations.Cache(include = "non-lazy", region = "post.id", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Post {
 
     @Id
@@ -31,7 +34,7 @@ public class Post {
     @Column
     private String text;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
     public Post(Integer id, String title, String text) {

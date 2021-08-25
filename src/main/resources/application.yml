@@ -7,4 +7,19 @@ spring:
   liquibase:
     change-log: classpath:/db/changelog/db-changelog-master.yaml
     enabled: true
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        javax.cache:
+          provider: org.ehcache.jsr107.EhcacheCachingProvider
+        cache:
+          use_second_level_cache: true
+          region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+          use_query_cache: true
 
+logging:
+  level:
+    org:
+      hibernate:
+        type: info

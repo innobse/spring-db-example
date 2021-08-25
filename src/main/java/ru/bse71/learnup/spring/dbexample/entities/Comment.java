@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
 
@@ -19,6 +21,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "comments")
+@Cacheable
+@org.hibernate.annotations.Cache(include = "all", region = "comment.id", usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Comment {
 
     @Id

@@ -8,6 +8,7 @@ import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Comment;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
+import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -59,5 +60,24 @@ public class DemoService implements ApplicationContextAware {
         for (Post post : posts) {
             System.out.println(post);
         }
+    }
+
+    public void demoCache() {
+        for (int i = 0; i < 3; i++) {
+            postDao.getPostById(1);
+            System.out.println("==================================");
+        }
+    }
+
+    public void demoCacheMethod() {
+        final String testTitle = "test";
+        PostDaoDataJpa repo = (PostDaoDataJpa) postDao;
+        repo.addPost(
+                new Post(null, testTitle, testTitle));
+        for (int i = 0; i < 3; i++) {
+            repo.getPostByTitle(testTitle);
+            System.out.println("==================================");
+        }
+        repo.deletePostByTitle(testTitle);
     }
 }

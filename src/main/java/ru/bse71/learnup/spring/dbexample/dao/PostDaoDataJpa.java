@@ -5,6 +5,7 @@ import ru.bse71.learnup.spring.dbexample.entities.Post;
 import ru.bse71.learnup.spring.dbexample.repositories.CommentRepository;
 import ru.bse71.learnup.spring.dbexample.repositories.PostRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class PostDaoDataJpa implements PostDao {
 
     @Override
     public Post getPostById(Integer id) {
-        return postRepository.getOne(id);
+        return postRepository.findById(id).get();
     }
 
     @Override
@@ -40,12 +41,22 @@ public class PostDaoDataJpa implements PostDao {
 
     @Override
     public Post updatePost(Post post) {
-        return addPost(post);
+        return postRepository.save(post);
     }
 
     @Override
     public boolean deletePostById(Integer id) {
         postRepository.deleteById(id);
+        return true;
+    }
+
+    public Post getPostByTitle(String title) {
+        return postRepository.getPostByTitle(title);
+    }
+
+    @Transactional
+    public boolean deletePostByTitle(String title) {
+        postRepository.deleteByTitle(title);
         return true;
     }
 

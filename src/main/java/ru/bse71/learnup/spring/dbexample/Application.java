@@ -3,7 +3,9 @@ package ru.bse71.learnup.spring.dbexample;
 import org.hibernate.SessionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -27,11 +29,12 @@ import javax.sql.DataSource;
  */
 
 @SpringBootApplication
+@EnableCaching
 public class Application {
 
     public static void main(String[] args) {
         final ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
-        ctx.getBean(DemoService.class).demo2();
+        ctx.getBean(DemoService.class).demoCacheMethod();
     }
 
     @Bean
