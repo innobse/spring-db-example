@@ -102,11 +102,11 @@ public class PostDaoJdbc implements PostDao {
     public Post updatePost(Post post) {
         try {
             final PreparedStatement preparedStatement =
-                    connection.prepareStatement("UPDATE INTO posts(id, title, text) VALUES (?, ?, ?);");
+                    connection.prepareStatement("UPDATE posts SET title = ?, text = ? WHERE id = ?;");
 
-            preparedStatement.setInt(1, post.getId());
-            preparedStatement.setString(2, post.getTitle());
-            preparedStatement.setString(3, post.getText());
+            preparedStatement.setString(1, post.getTitle());
+            preparedStatement.setString(2, post.getText());
+            preparedStatement.setInt(3, post.getId());
 
             if (preparedStatement.executeUpdate() == 1L) {
                 for (Comment comment : post.getComments()) {
@@ -149,11 +149,11 @@ public class PostDaoJdbc implements PostDao {
     public void updateComment(Comment comment, Integer postId) throws SQLException {
         final PreparedStatement preparedStatement =
                 connection.prepareStatement(
-                        "UPDATE INTO comments(id, post_id, text) VALUES (?, ?, ?);");
+                        "UPDATE comments SET post_id = ?, text = ? WHERE id = ?;");
 
-        preparedStatement.setInt(1, comment.getId());
-        preparedStatement.setInt(2, postId);
-        preparedStatement.setString(3, comment.getText());
+        preparedStatement.setInt(3, comment.getId());
+        preparedStatement.setInt(1, postId);
+        preparedStatement.setString(2, comment.getText());
         preparedStatement.executeUpdate();
     }
 
