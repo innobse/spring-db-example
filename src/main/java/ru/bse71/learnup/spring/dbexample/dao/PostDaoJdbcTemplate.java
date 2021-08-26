@@ -68,10 +68,10 @@ public class PostDaoJdbcTemplate implements PostDao {
     public Post updatePost(Post post) {
 
         final int updateRows = jdbcTemplate.update(
-                "UPDATE INTO posts(id, title, text) VALUES (?, ?, ?);",
-                post.getId(),
+                "UPDATE posts SET title = ?, text = ? WHERE id = ?;",
                 post.getTitle(),
-                post.getText());
+                post.getText(),
+                post.getId());
 
         if (updateRows == 1) {
             for (Comment comment : post.getComments()) {
@@ -97,10 +97,10 @@ public class PostDaoJdbcTemplate implements PostDao {
     public void updateComment(Comment comment, Integer postId) {
 
         jdbcTemplate.update(
-                "UPDATE INTO comments(id, post_id, text) VALUES (?, ?, ?);",
-                comment.getId(),
+                "UPDATE comments SET post_id = ?, text = ? WHERE id = ?;",
                 postId,
-                comment.getText());
+                comment.getText(),
+                comment.getId());
     }
 
     private Post parsePostFromResultSet(SqlRowSet resultSet) {

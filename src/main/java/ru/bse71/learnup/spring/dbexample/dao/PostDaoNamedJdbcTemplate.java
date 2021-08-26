@@ -80,7 +80,7 @@ public class PostDaoNamedJdbcTemplate implements PostDao {
         params.put("text", post.getText());
 
         final int updateRows = jdbcTemplate.update(
-                "UPDATE INTO posts(id, title, text) VALUES (:id, :title, :text);",
+                "UPDATE posts SET title = :title, text = :text WHERE id = :id;",
                 params);
 
         if (updateRows == 1) {
@@ -114,7 +114,7 @@ public class PostDaoNamedJdbcTemplate implements PostDao {
         params.put("text", comment.getText());
 
         jdbcTemplate.update(
-                "UPDATE INTO comments(id, post_id, text) VALUES (:id, :postId, :text);", params);
+                "UPDATE comments SET post_id = :postId, text = :text WHERE id = :id;", params);
     }
 
     private List<Post> parsePostsFromResultSet(SqlRowSet resultSet) {
