@@ -31,7 +31,8 @@ public class PostDaoJdbc implements PostDao {
     }
 
     @PostConstruct
-    public void connectToDb() throws SQLException {
+    public void connectToDb() throws SQLException, ClassNotFoundException {
+        Class.forName("org.postgresql.Driver");
         this.connection = DriverManager.getConnection(dbUrl, user, pass);
     }
 
