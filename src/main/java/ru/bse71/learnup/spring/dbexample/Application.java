@@ -31,7 +31,7 @@ public class Application {
 
     public static void main(String[] args) {
         final ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
-        ctx.getBean(DemoService.class).demo2();
+        ctx.getBean(DemoService.class).demo();
     }
 
     @Bean
