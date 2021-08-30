@@ -7,8 +7,10 @@ import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Comment;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by bse71
@@ -31,19 +33,37 @@ public class DemoService implements ApplicationContextAware {
     }
 
     public void demo() {
-
         Post newPost = new Post(null, "Новый пост", "Lorem ipsum...");
-        newPost.setComments(
-                Collections.singletonList(
-                        new Comment(null, "Comment text", newPost)));
+        try {
+            final ArrayList<Comment> comments = new ArrayList<>();
+            comments.add(
+                    new Comment(null, "Comment text", newPost));
+            newPost.setComments(comments);
 
-        newPost = postDao.addPost(newPost);
+            newPost = postDao.addPost(newPost);
 
-        System.out.println(newPost);
+            System.out.println(newPost);
 
-        postDao.deletePostById(newPost.getId());
+            newPost.setTitle("Новый пост 2");
+            final int postId = newPost.getId();
+            new Thread(() -> {
+                final Post post = new Post(postId, "Новый пост 3", "текст");
+                post.setComments(comments);
+                postDao.updatePost(post);
+                System.out.println("Обновлено из потока");
+            }).start();
+            postDao.updatePost(newPost);
+            System.out.println("Обновлено");
+        } finally {
+            postDao.deletePostById(newPost.getId());
+            System.out.println("Удалено");
 
-        printPosts(postDao.getAllPosts());
+            printPosts(postDao.getAllPosts());
+        }
+
+
+
+
 
     }
 

@@ -31,7 +31,7 @@ public class Post {
     @Column
     private String text;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     public Post(Integer id, String title, String text) {

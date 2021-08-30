@@ -6,6 +6,7 @@ import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
@@ -20,6 +21,8 @@ import java.util.List;
 @Repository
 @Profile("jpa")
 public class PostDaoJpa implements PostDao {
+
+    private static int DEFAULT_TIMEOUT = 2000;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -45,14 +48,33 @@ public class PostDaoJpa implements PostDao {
     @Override
     @Transactional
     public Post updatePost(Post post) {
-        return entityManager.merge(post);
+        final Post updated = entityManager.find(Post.class, post.getId());
+//        entityManager.lock(updated, LockModeType.PESSIMISTIC_WRITE);
+        System.out.println("Блокировка " + post.getId());
+
+        try {
+            Thread.sleep(DEFAULT_TIMEOUT);
+        } catch (InterruptedException e) {}
+
+        updated.setTitle(post.getTitle());
+        updated.setText(post.getText());
+        updated.setComments(post.getComments());
+        return entityManager.merge(updated);
     }
 
     @Override
     @Transactional
     public boolean deletePostById(Integer id) {
+        final Post post = entityManager.find(Post.class, id);
+//        entityManager.lock(post, LockModeType.PESSIMISTIC_WRITE);
+        System.out.println("Блокировка для удаления " + post.getId());
+
+        try {
+            Thread.sleep(DEFAULT_TIMEOUT);
+        } catch (InterruptedException e) {}
+
         entityManager.remove(
-                entityManager.find(Post.class, id));
+                post);
         return true;
     }
 }
