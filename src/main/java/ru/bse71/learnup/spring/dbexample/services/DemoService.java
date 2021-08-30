@@ -3,11 +3,11 @@ package ru.bse71.learnup.spring.dbexample.services;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import ru.bse71.learnup.spring.dbexample.dao.PostDaoDataJpa;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Comment;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,6 +31,18 @@ public class DemoService implements ApplicationContextAware {
         this.ctx = ctx;
     }
 
+    public Post createPost(String title, String text) {
+
+        Post post = new Post(null, title, text);
+        final ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(
+                new Comment(null, "Comment text", post));
+        post.setComments(comments);
+
+        final Post newPost = postDao.addPost(post);
+        return newPost;
+    }
+
     public void demo() {
 
         Post newPost = new Post(null, "Новый пост", "Lorem ipsum...");
@@ -48,13 +60,19 @@ public class DemoService implements ApplicationContextAware {
 
     }
 
-    public void demo2() {
-        PostDaoDataJpa repo = (PostDaoDataJpa) postDao;
+    public void deletePost(Post post) {
+        postDao.deletePostById(post.getId());
+        System.out.println("Удалено");
+    }
 
-        System.out.println("Посты с текстом:\n" + repo.getAllPostsWithText());
-        System.out.println("\n\nПосты, содержащие \"tintle\":\n" + repo.getAllPostsWithTitleContains("title"));
-        System.out.println("\n\nПопулярные посты:\n" + repo.getPopularPosts(50));
-        System.out.println("\n\nСредней популярности посты:\n" + repo.getMiddlePopularPosts());
+    public Post getPost(Integer id) {
+        return postDao.getPostById(id);
+    }
+
+    public void updatePost(Post newPost) {
+        newPost.setTitle("Новый пост 2");
+        postDao.updatePost(newPost);
+        System.out.println("Обновлено");
     }
 
     private void printPosts(Collection<Post> posts) {

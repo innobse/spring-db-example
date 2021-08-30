@@ -14,32 +14,44 @@ import java.util.Objects;
  * Time: 23:41
  */
 
-@Getter
-@Setter
+
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
 @NamedQueries({
-        @NamedQuery(name = "Post.getPopular", query = "SELECT p FROM Post p WHERE p.likesCount > 50"),
-        @NamedQuery(name = "Post.getMiddle", query = "SELECT p FROM Post p WHERE p.likesCount BETWEEN 10 AND 50")
+        @NamedQuery(name = "Post.getPopular", query = "SELECT p FROM Post p WHERE p.likesCount > 50", lockMode = LockModeType.READ),
+        @NamedQuery(name = "Post.getMiddle", query = "SELECT p FROM Post p WHERE p.likesCount BETWEEN 10 AND 50", lockMode = LockModeType.READ)
 })
 public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Integer id;
 
     @Column
+    @Getter
+    @Setter
     private String title;
 
     @Column
+    @Getter
+    @Setter
     private String text;
 
     @Column(name = "likes")
-    private Integer likesCount;
+    @Getter
+    @Setter
+    private int likesCount;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Getter
+    @Setter
     private List<Comment> comments;
+
+    @Version
+    private long version;
 
     public Post(Integer id, String title, String text) {
         this.id = id;

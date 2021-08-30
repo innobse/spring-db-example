@@ -1,5 +1,7 @@
 package ru.bse71.learnup.spring.dbexample.dao;
 
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 import ru.bse71.learnup.spring.dbexample.repositories.CommentRepository;
@@ -47,6 +49,13 @@ public class PostDaoDataJpa implements PostDao {
     public boolean deletePostById(Integer id) {
         postRepository.deleteById(id);
         return true;
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void modifyTexts(String oldText, String newText) {
+        for (Post post : postRepository.getForModifyTexts(oldText)) {
+            post.setText(newText);
+        }
     }
 
     public List<Post> getPopularPosts(int popularityBorder) {
