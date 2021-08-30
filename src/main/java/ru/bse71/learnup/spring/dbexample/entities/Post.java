@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by bse71
@@ -14,75 +13,24 @@ import java.util.Objects;
  * Time: 23:41
  */
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "posts")
-public class Post {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+@NoArgsConstructor
+public class Post extends AbstractTextEntity {
 
     @Column
+    @Getter
+    @Setter
     private String title;
 
-    @Column
-    private String text;
-
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Getter
+    @Setter
     private List<Comment> comments;
 
     public Post(Integer id, String title, String text) {
-        this.id = id;
+        super(id, text);
         this.title = title;
-        this.text = text;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return Objects.equals(id, post.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 
     @Override
