@@ -14,8 +14,7 @@ import java.util.Objects;
  * Time: 23:41
  */
 
-@Getter
-@Setter
+
 @NoArgsConstructor
 @Entity
 @Table(name = "posts")
@@ -23,53 +22,32 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Integer id;
 
     @Column
+    @Getter
+    @Setter
     private String title;
 
     @Column
+    @Getter
+    @Setter
     private String text;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Getter
+    @Setter
     private List<Comment> comments;
+
+    @Version
+    private long version;
 
     public Post(Integer id, String title, String text) {
         this.id = id;
         this.title = title;
         this.text = text;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     @Override

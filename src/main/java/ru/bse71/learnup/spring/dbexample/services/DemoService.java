@@ -7,10 +7,7 @@ import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Comment;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by bse71
@@ -32,39 +29,29 @@ public class DemoService implements ApplicationContextAware {
         this.ctx = ctx;
     }
 
-    public void demo() {
-        Post newPost = new Post(null, "Новый пост", "Lorem ipsum...");
-        try {
-            final ArrayList<Comment> comments = new ArrayList<>();
-            comments.add(
-                    new Comment(null, "Comment text", newPost));
-            newPost.setComments(comments);
+    public Post createPost() {
 
-            newPost = postDao.addPost(newPost);
+        Post post = new Post(null, "Новый пост", "Lorem ipsum...");
+        final ArrayList<Comment> comments = new ArrayList<>();
+        comments.add(
+                new Comment(null, "Comment text", post));
+        post.setComments(comments);
 
-            System.out.println(newPost);
+        final Post newPost = postDao.addPost(post);
+        return newPost;
+    }
 
-            newPost.setTitle("Новый пост 2");
-            final int postId = newPost.getId();
-            new Thread(() -> {
-                final Post post = new Post(postId, "Новый пост 3", "текст");
-                post.setComments(comments);
-                postDao.updatePost(post);
-                System.out.println("Обновлено из потока");
-            }).start();
-            postDao.updatePost(newPost);
-            System.out.println("Обновлено");
-        } finally {
-            postDao.deletePostById(newPost.getId());
-            System.out.println("Удалено");
+    public void deletePost(Post post) {
+        postDao.deletePostById(post.getId());
+        System.out.println("Удалено");
 
-            printPosts(postDao.getAllPosts());
-        }
+        printPosts(postDao.getAllPosts());
+    }
 
-
-
-
-
+    public void updatePost(Post newPost) {
+        newPost.setTitle("Новый пост 2");
+        postDao.updatePost(newPost);
+        System.out.println("Обновлено");
     }
 
     private void printPosts(Collection<Post> posts) {

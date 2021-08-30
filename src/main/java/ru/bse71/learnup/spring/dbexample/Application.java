@@ -11,12 +11,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.orm.jpa.JpaOptimisticLockingFailureException;
 import ru.bse71.learnup.spring.dbexample.config.DbPropertiesConfig;
 import ru.bse71.learnup.spring.dbexample.dao.PostDaoHibernate;
 import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbc;
 import ru.bse71.learnup.spring.dbexample.dao.PostDaoJdbcTemplate;
 import ru.bse71.learnup.spring.dbexample.dao.PostDaoNamedJdbcTemplate;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
+import ru.bse71.learnup.spring.dbexample.entities.Post;
 import ru.bse71.learnup.spring.dbexample.services.DemoService;
 
 import javax.sql.DataSource;
@@ -32,7 +34,18 @@ public class Application {
 
     public static void main(String[] args) {
         final ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
-        ctx.getBean(DemoService.class).demo();
+        final DemoService service = ctx.getBean(DemoService.class);
+
+        final Post post = service.createPost();
+
+        try {
+            service.updatePost(post);
+        } catch (JpaOptimisticLockingFailureException err) {
+            System.out.println("НЕ МОГУ ОБНОВИТЬ СУЩНОСТЬ!");
+        } finally {
+            service.deletePost(post);
+        }
+
     }
 
     @Bean
@@ -63,8 +76,8 @@ public class Application {
     }
 
     @Bean
-    public DemoService demoService(PostDao postDao) {
-        return new DemoService(postDao);
+    public DemoService demoService(PostDao postDao1) {
+        return new DemoService(postDao1);
     }
 
     @Bean

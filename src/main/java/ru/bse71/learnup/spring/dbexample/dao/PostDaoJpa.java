@@ -1,6 +1,7 @@
 package ru.bse71.learnup.spring.dbexample.dao;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 import ru.bse71.learnup.spring.dbexample.dao.interfaces.PostDao;
 import ru.bse71.learnup.spring.dbexample.entities.Post;
@@ -20,9 +21,10 @@ import java.util.List;
 
 @Repository
 @Profile("jpa")
+@Scope("prototype")
 public class PostDaoJpa implements PostDao {
 
-    private static int DEFAULT_TIMEOUT = 2000;
+    private static int DEFAULT_TIMEOUT = 5000;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -49,7 +51,7 @@ public class PostDaoJpa implements PostDao {
     @Transactional
     public Post updatePost(Post post) {
         final Post updated = entityManager.find(Post.class, post.getId());
-//        entityManager.lock(updated, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.lock(updated, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
         System.out.println("Блокировка " + post.getId());
 
         try {
@@ -66,7 +68,7 @@ public class PostDaoJpa implements PostDao {
     @Transactional
     public boolean deletePostById(Integer id) {
         final Post post = entityManager.find(Post.class, id);
-//        entityManager.lock(post, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.lock(post, LockModeType.OPTIMISTIC_FORCE_INCREMENT);
         System.out.println("Блокировка для удаления " + post.getId());
 
         try {

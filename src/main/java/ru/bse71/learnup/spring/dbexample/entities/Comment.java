@@ -13,39 +13,35 @@ import javax.persistence.*;
  * Time: 23:42
  */
 
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "comments")
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Getter
+    @Setter
     private Integer id;
 
     @Column
+    @Getter
+    @Setter
     private String text;
 
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
     private Post post;
 
-    public int getId() {
-        return id;
-    }
+    @Version
+    private long version;
 
-    public void setId(int id) {
+    public Comment(Integer id, String text, Post post) {
         this.id = id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
         this.text = text;
+        this.post = post;
     }
 
     @Override
